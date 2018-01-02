@@ -131,26 +131,42 @@ weekday_frame = melt(WEEKDAY_COUNTER %>% contract_counter()) %>% mutate(day=fact
 
 ggplot(weekhour_frame, aes(x=day, y=hour, fill = value)) +
   geom_tile() + scale_fill_gradientn('count', colors=cet_pal(7, 'inferno')) + 
-  geom_text(aes(label=value, alpha = (0:1)[2-(value==0)]), color='#777777', size=4) +
+  geom_text(aes(label=value, alpha = (0:1)[2-(value==0)]), color='#808080', size=4) +
   scale_alpha_identity() + 
   ggtitle('Number of runs during hours of week', 
-          subtitle='In 2017, starting June 3rd, 2017') + 
-  xlab('') 
+          subtitle='In 2017, starting June 3rd, 2017; runs can span over multiple hours') + 
+  xlab('')  +
+  theme(plot.title = element_text(size=rel(1.8)),
+        plot.subtitle = element_text(size=rel(1.4)),
+        axis.text.x = element_text(size=rel(1.4)),
+        axis.text.y = element_text(size=rel(1.4)),
+        axis.title.y = element_text(size=rel(1.4)))
 
 ggplot(weekday_frame, aes(x=day, y=value)) + 
   geom_bar(stat='identity') +
   geom_text(aes(label=value), vjust='inward', size=6) + 
   ylab('count') + xlab('') + 
   ggtitle("Number of runs in 2017 by day of week",
-          subtitle='In 2017, starting June 3rd, 2017') + 
-  theme_bw()
+          subtitle='In 2017, starting June 3rd, 2017; runs can span over two days (occurs once)') + 
+  theme_bw() +
+  theme(plot.title = element_text(size=rel(1.8)),
+        plot.subtitle = element_text(size=rel(1.4)),
+        axis.text.x = element_text(size=rel(1.4)),
+        axis.text.y = element_text(size=rel(1.4)),
+        axis.title.y = element_text(size=rel(1.4)))
 
 ggplot(hour_frame, aes(x=hour, y=value)) + 
   geom_bar(stat='identity')  + 
   geom_text(aes(label=value, alpha=(0:1)[2-(value==0)]), vjust=0, size=5) + 
   ggtitle("Number of runs in 2017 by hour of day",
           subtitle='In 2017, starting June 3rd, 2017') + 
-  scale_alpha_identity()
+  scale_alpha_identity() + theme_bw() + 
+  theme(plot.title = element_text(size=rel(1.8)),
+        plot.subtitle = element_text(size=rel(1.4)),
+        axis.text.x = element_text(size=rel(1.4)),
+        axis.text.y = element_text(size=rel(1.4)),
+        axis.title.y = element_text(size=rel(1.4)),
+        axis.title.x = element_text(size=rel(1.4))) 
 
 ##############
 ####TRENDS####
@@ -170,12 +186,18 @@ ggplot(combined_data %>% group_by(week) %>% summarise(total.distance=sum(total.d
   geom_bar(stat='identity') + 
   geom_text(aes(label=round(total.distance)), vjust=0, size=4.5) +
   theme_bw() + 
-  theme(axis.text.x = element_text(angle=70),
+  theme(axis.text.x = element_text(angle=70, vjust=1),
         panel.border= element_blank(),
         axis.ticks.x = element_blank()) + 
   xlab('Week of Year') + 
   ylab('Weekly Distance (miles)') +
-  ggtitle('Weekly Running Distance in 2017')
+  ggtitle('Weekly Running Distance in 2017') +
+  theme(plot.title = element_text(size=rel(1.8)),
+        plot.subtitle = element_text(size=rel(1.4)),
+        axis.text.x = element_text(size=rel(1.4)),
+        axis.text.y = element_text(size=rel(1.4)),
+        axis.title.y = element_text(size=rel(1.4)),
+        axis.title.x = element_text(size=rel(1.4)))
 
 ggplot(combined_data %>% group_by(week) %>%
          summarise(pace=weighted.mean(mean.pace, duration),
@@ -195,7 +217,13 @@ ggplot(combined_data %>% group_by(week) %>%
   ggtitle('Average Weekly Running Pace in 2017') + 
   scale_y_continuous(label=mpm_format) +
   scale_fill_gradientn('weekly distance', colors=cet_pal(7, 'rainbow')) + 
-  scale_color_identity()
+  scale_color_identity() +
+  theme(plot.title = element_text(size=rel(1.8)),
+        plot.subtitle = element_text(size=rel(1.4)),
+        axis.text.x = element_text(size=rel(1.4)),
+        axis.text.y = element_text(size=rel(1.4)),
+        axis.title.y = element_text(size=rel(1.4)),
+        axis.title.x = element_text(size=rel(1.4)))
 
 races = combined_data %>% filter(between(total.distance, 2.9, 3.25) | 1:n() == 1) %>%
   filter(mean.pace < 6 | 1:n()==1)
@@ -206,7 +234,14 @@ ggplot(races, aes(x=start.time, y=mean.pace)) +
   scale_y_continuous(label=mpm_format, limits = c(5.5,7.1)) + 
   xlab('Date') + ylab('Race Pace (min/mile)') + 
   ggtitle("Race Paces for 2017 5Ks") + 
-  scale_x_datetime(date_breaks = '1 month')
+  scale_x_datetime(date_breaks = '1 month', 
+                   limits = as.POSIXct(c('2017-05-15 00:00:00','2017-12-15 00:00:00'))) +
+  theme(plot.title = element_text(size=rel(1.8)),
+        plot.subtitle = element_text(size=rel(1.4)),
+        axis.text.x = element_text(size=rel(1.4)),
+        axis.text.y = element_text(size=rel(1.4)),
+        axis.title.y = element_text(size=rel(1.4)),
+        axis.title.x = element_text(size=rel(1.4)))
 
 ##############
 ##CLUSTERING##
